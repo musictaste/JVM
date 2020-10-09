@@ -1,5 +1,5 @@
 # Runtime Data Area and Instruction Set
-
+[toc]
 jvms 2.4 2.5
 
 ## 指令集分类
@@ -27,7 +27,7 @@ jvms 2.4 2.5
 
 ##### Direct Memory
 
-    JVM可以直接访问的内核空间的内存 (OS 管理的内存)
+    JVM可以直接访问内核空间的内存 (OS 管理的内存)
     NIO（JDK1.4以后增加） ， 提高效率，实现zero copy
 
 ##### Heap
@@ -50,10 +50,12 @@ jvms 2.4 2.5
        3. Dynamic Linking 动态连接
            https://blog.csdn.net/qq_41813060/article/details/88379473 
           jvms 2.6.3
-          a() -> b()，方法a调用了方法b，b的内容存放在constant_pool常量池中，这个指向常量池的那个符号连接就是动态连接
+          a() -> b()，方法a调用了方法b，b的内容存放在constant_pool常量池中，这个指向常量池的那个符号连接；
+          找到这个符号链接，看看它有没有解析，如果没有解析就进行动态解析，如果已经解析了就拿过来使用，Dynamic Linking指的就是这个东西；
+          注：方法的内容：这个方法叫什么名，方法的类型是什么
           
        4. return address 返回地址
-          a() -> b()，方法a调用了方法b, b方法的返回值放在什么地方
+          a() -> b()，方法a调用了方法b, b方法执行完了之后把返回值放哪儿去，执行结束后应该回到那个地址上去继续执行，这个叫return address
     
 ```
 public class TestIPulsPlus {
@@ -71,7 +73,7 @@ public class TestIPulsPlus {
     查看二进制码指令
          0 bipush 8  8压栈
          2 istore_1  出栈，并赋值给局部变量表i，i=8
-         3 iload_1  i=8压栈
+         3 iload_1 i=8压栈
          4 iinc 1 by 1  局部变量表中的i加1，i=9（i++是在局部变量表中完成的）
          7 istore_1  栈中i(i=8)出栈,并赋值给局部变量表中的i，这时i=8 
          8 getstatic #2 <java/lang/System.out>
@@ -84,7 +86,7 @@ public class TestIPulsPlus {
     查看二进制码指令
          0 bipush 8  8压栈
          2 istore_1  出栈，并赋值给局部变量表i（i=8）
-         3 iinc 1 by 1  局部变量表中的i加1，i=9（i++是在局部变量表中完成的）
+         3 iinc 1 by 1  局部变量表中的i加1，i=9（++i是在局部变量表中完成的）
          6 iload_1   i=9压栈
          7 istore_1   i=9出栈
          8 getstatic #2 <java/lang/System.out>
@@ -110,7 +112,7 @@ public class TestIPulsPlus {
        会触发FGC清理
        不设定的话，最大就是物理内存
 
-#### 查看代码中的指令
+## 查看代码中的指令
 
 ```
 public class Hello_01 {
@@ -177,7 +179,8 @@ m4
 
     new  new对象
     dup  new对象后，对象地址会压栈；dup复制该对象地址
-    invokespecial <init>  现在有两个对象地址，执行后会弹出dup的对象地址，剩下一个对象地址 执行完构造方法，会把上面dup的对象地址弹出去，这时候对象才算初始化完成
+    invokespecial <init>  现在有两个对象地址，执行构造方法后会弹出dup的对象地址，剩下一个对象地址；
+        执行完构造方法，会把上面dup的对象地址弹出去，这时候对象才算初始化完成
         这时候栈里剩下的对象地址，指向了初始化后的对象
     astore_1  把初始化的对象地址指向h对象
     
@@ -217,7 +220,7 @@ m1
 
 ```
 
-##### 有返回值
+#### 有返回值
 ```
 public class Hello_03 {
     public static void main(String[] args) {
@@ -255,7 +258,7 @@ main: int i = h.m1()
 
 ```
     
-##### 递归
+#### 递归
 ```
 public class Hello_04 {
     public static void main(String[] args) {
@@ -276,7 +279,7 @@ main
      7 astore_1
      8 aload_1
      9 iconst_3 常量3压栈
-    10 invokevirtual #4  调用m方法 <com/mashibing/jvm/c4_RuntimeDataAreaAndInstructionSet/Hello_04.m>
+    10 invokevirtual #4  <com/mashibing/jvm/c4_RuntimeDataAreaAndInstructionSet/Hello_04.m>  调用m方法
     13 istore_2  赋值给i
     14 return
     
@@ -297,7 +300,7 @@ m
 
 ```
 
-##### invokeXXX
+#### invokeXXX
 
 
 ```
@@ -454,7 +457,7 @@ main
 ```
 
 
-##### 思考：
+#### 思考：如何证明1.7字符串常量位于Perm，而1.8位于Heap？
 
     如何证明1.7字符串常量位于Perm，而1.8位于Heap？
     提示：结合GC， 一直创建字符串常量，观察堆，和Metaspace
@@ -484,7 +487,7 @@ main
 
         会产生一个lambda表达式的匿名内部类
 
-==面试题：==
+## ==面试题：==
         
     for(;;){
         I i=C::n;

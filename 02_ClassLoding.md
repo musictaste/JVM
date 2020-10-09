@@ -14,7 +14,7 @@
     
     类加载器
         1.Bootstrap
-            lib/rt.jar(runtime) charset.jar等核心类
+            jre/lib/rt.jar(runtime) charset.jar等核心类
             返回null，因为这些类是C++实现，java中没有对应的class
         2.Extension
             jre/lib/ext/*.jar
@@ -99,14 +99,17 @@ Exception in thread "main" java.lang.NullPointerException
       
 ##### 1.3类加载范围：
 
-    来自Launcher源码
-    BootstrapClassLoader加载路径；sun.boot.class.path
-    ExtensionClassLoader加载路径：java.ext.dirs
-    AppClassLoader加载路径：java.class.path
+> 来自Launcher源码
+> 
+> BootstrapClassLoader加载路径：sun.boot.class.path
+> 
+> ExtensionClassLoader加载路径：java.ext.dirs
+> 
+> AppClassLoader加载路径：java.class.path
 
 ![image](https://raw.githubusercontent.com/musictaste/JVM/master/image/027.png)
 
-注意；app下会加载项目路径
+==注意：app下会加载项目路径==
 
 ```
 public class T003_ClassLoaderScope {
@@ -254,11 +257,11 @@ private static class BootClassPathHolder {
     
     严格讲应该叫LazyInitialing
       
-==JVM规范并没有规定何时加载==
+==面试题：JVM规范并没有规定何时加载==
       
 ==但是严格规定了什么时候必须初始化（现在会考）==
      
-    –new getstatic putstatic invokestatic指令，访问final变量除外（访问非静态的方法或属性）
+    –new getstatic putstatic invokestatic指令、访问final变量除外（访问非静态的方法或属性）
   
     –java.lang.reflect对类进行反射调用时
   
@@ -266,7 +269,8 @@ private static class BootClassPathHolder {
   
     –虚拟机启动时，被执行的主类必须初始化
   
-    –动态语言支持java.lang.invoke.MethodHandle解析的结果为REF_getstatic REF_putstatic REF_invokestatic的方法句柄时，该类必须初始化(不了解)
+    –动态语言支持java.lang.invoke.MethodHandle解析的结果为REF_getstatic、
+    REF_putstatic、REF_invokestatic的方法句柄时，该类必须初始化(不了解)
     
 
 ```
@@ -304,6 +308,8 @@ public class T008_LazyLoading { //严格讲应该叫lazy initialzing，因为jav
 ##### 1.6. ClassLoader的源码
       
 ==**findInCache -> parent.loadClass -> findClass()**==
+
+==迭代==
 
     1.loadClass将加载到内存中的class对象返回
     
@@ -481,7 +487,7 @@ public class T006_MSBClassLoader extends ClassLoader {
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        File f = new File("D:/ideaWorkspace/mashibing/JVM-master/out/production/JVM-master", name.replace(".", "/").concat(".class"));
+        File f = new File("D:/ideaWorkspace/mashibing/JVM/out/production/JVM-projec", name.replace(".", "/").concat(".class"));
         try {
             FileInputStream fis = new FileInputStream(f);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -493,7 +499,7 @@ public class T006_MSBClassLoader extends ClassLoader {
 
             byte[] bytes = baos.toByteArray();
             baos.close();
-            fis.close();//可以写的更加严谨
+            fis.close();//可以写更加严谨
 
             return defineClass(name, bytes, 0, bytes.length);
         } catch (Exception e) {
@@ -536,7 +542,7 @@ public class T007_MSBClassLoaderWithEncription extends ClassLoader {
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        File f = new File("D:/ideaWorkspace/mashibing/JVM-master/out/production/JVM-master", name.replace('.', '/').concat(".msbclass"));
+        File f = new File("D:/ideaWorkspace/mashibing/JVM/out/production/JVM-project", name.replace('.', '/').concat(".msbclass"));
 
         try {
             FileInputStream fis = new FileInputStream(f);
@@ -572,9 +578,9 @@ public class T007_MSBClassLoaderWithEncription extends ClassLoader {
     }
 
     private static void encFile(String name) throws Exception {
-        File f = new File("D:/ideaWorkspace/mashibing/JVM-master/out/production/JVM-master", name.replace('.', '/').concat(".class"));
+        File f = new File("D:/ideaWorkspace/mashibing/JVM/out/production/JVM-projectr", name.replace('.', '/').concat(".class"));
         FileInputStream fis = new FileInputStream(f);
-        FileOutputStream fos = new FileOutputStream(new File("D:/ideaWorkspace/mashibing/JVM-master/out/production/JVM-master", name.replaceAll(".", "/").concat(".msbclass")));
+        FileOutputStream fos = new FileOutputStream(new File("D:/ideaWorkspace/mashibing/JVM/out/production/JVM-project", name.replaceAll(".", "/").concat(".msbclass")));
         int b = 0;
 
         while((b = fis.read()) != -1) {
@@ -779,7 +785,7 @@ true
          
 ##### 1.9 混合模式         
         
-面试题：为什么不只直接编译呢？
+面试题：JVM为什么不直接编译呢？
 
     1.现在解释器执行也很快
     2.如果直接编译的，启动过程会特别长
@@ -798,7 +804,7 @@ true
         多次被调用的方法（方法计数器）
         多次被调用的循环(循环计数器)
         
-        检测热点代码：-XX:CompileThreshold = 10000
+        检测热点代码：-XX:CompileThreshold=10000
         
 ![image](https://raw.githubusercontent.com/musictaste/JVM/master/image/028.png)        
 

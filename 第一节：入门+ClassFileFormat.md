@@ -13,8 +13,9 @@
     
     虚构出来的一台计算机
     
-        -字节码指令集（汇编指令）
-        -内存管理：堆、栈、方法区等
+>  ==字节码指令集（汇编指令）==
+> 
+>  ==内存管理：堆、栈、方法区等==
 
     JDK = JRE+ development kit
     
@@ -24,23 +25,34 @@
 ![image](https://raw.githubusercontent.com/musictaste/JVM/master/image/009.png)  
 
 2. 常见的JVM
-        
-    hotspot
-    Jrockit
-    J9
-    Microsoft VM
-    TaobaoVM
-    Liquid VM
-    azul Zing
-    
-    Zing性能很高，费用也很贵
-    Oracel吸收了Zing的垃圾回收算法推出了ZGC
 
-    视频：Java要收钱，我该怎么办？
-        不对开发人员收费
-        oracle的hotspot收费
-        OpenJDK开源版本不收费
-        当然还有TaobaoJVM也不收费
+> hotspot
+> 
+> Jrockit
+> 
+> J9
+> 
+> Microsoft VM
+> 
+> TaobaoVM
+> 
+> Liquid VM
+> 
+> azul Zing
+> 
+> Zing性能很高，费用也很贵
+> 
+> Oracel吸收了Zing的垃圾回收算法推出了ZGC
+
+视频：Java要收钱，我该怎么办？
+> 不对开发人员收费
+>     
+> oracle的hotspot收费
+>     
+> OpenJDK开源版本不收费
+>     
+> 当然还有TaobaoJVM也不收费
+        
 ![image](https://raw.githubusercontent.com/musictaste/JVM/master/image/010.png)  
 
 ## 2：ClassFileFormat
@@ -70,11 +82,13 @@
 
 - General information
 
-        constant_pool_count:下标从1开始，0做了预留，代表没有任何引用
-            00 10 代表有16-1=15个常量
-            
-        access_flags 0x0021 是0x0001和0x0020按位与的结果
-            代表ACC_PUBLIC 和 ACC_SUPER
+> constant_pool_count:下标从1开始，0做了预留，代表没有任何引用
+> 
+> 00 10 代表有16-1=15个常量
+>     
+> access_flags 0x0021 是0x0001和0x0020按位与的结果
+> 
+> 代表ACC_PUBLIC 和 ACC_SUPER
 
 ==作业：将ClassFileFormat的思维导图画出来，并将知识整理了==
 
